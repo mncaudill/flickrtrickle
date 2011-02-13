@@ -1,0 +1,4 @@
+RewriteEngine on
+
+RewriteRule ^auth$                      auth.php
+RewriteRule ^trickle$                   trickle.php
