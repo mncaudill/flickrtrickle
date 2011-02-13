@@ -42,7 +42,7 @@
             'privacy_filter' => 5,
             'sort' => 'date-posted-asc', // Grabbing the oldest
             'per_page' => $num,
-            'extras' => 'url_s,tags',
+            'extras' => 'url_t,tags',
         );
         $rsp = flickr_api_call($args, true);
         return $rsp;

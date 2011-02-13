@@ -1,7 +1,6 @@
 <?php
 
     require 'include/init.php';
-    print '<pre>';
 
     $time = time();
     $token = $_SESSION['user']['token'];
@@ -54,8 +53,9 @@
                     'auth_token' => $token,
                 );
                 flickr_api_call($args, true);
-                
-                print "Trickled photo \"{$photo['title']['_content']}\"<br>";
+
+                $title = htmlspecialchars($photo['title']['_content'], ENT_COMPAT, 'utf-8');
+                print "Trickled photo \"$title\"<br>";
             }
         }
     }
