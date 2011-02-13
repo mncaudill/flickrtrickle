@@ -4,6 +4,7 @@
     print '<pre>';
 
     $time = time();
+    $token = $_SESSION['user']['token'];
 
     if(isset($_SESSION['user'])) {
         foreach($_POST['photos'] as $photo) {
@@ -11,7 +12,7 @@
             $args = array(
                 'method' => 'flickr.photos.getInfo',
                 'photo_id' => $photo,
-                'auth_token' => $_SESSION['user']['token'],
+                'auth_token' => $token],
             );
             $rsp = flickr_api_call($args, true);
             if($rsp['ok'] && $rsp['rsp']['stat'] == 'ok') {
@@ -29,7 +30,7 @@
                 // Update date
                 $args = array(
                     'method' => 'flickr.photos.setDates',
-                    'auth_token' => $_SESSION['user']['token'],
+                    'auth_token' => $token],
                     'photo_id' => $photo,
                     'date_posted' => $time++,
                 );
@@ -39,7 +40,7 @@
                 $args = array(
                     'method' => 'flickr.photos.removeTag',
                     'tag_id' => $tag_id,
-                    'auth_token' => $_SESSION['user']['token'],
+                    'auth_token' => $token],
                 );
                 flickr_api_call($args, true);
 
@@ -50,7 +51,7 @@
                     'is_public' => 1,
                     'is_friend' => 0,
                     'is_family' => 0,
-                    'auth_token' => $_SESSION['user']['token'],
+                    'auth_token' => $token,
                 );
                 $rsp = flickr_api_call($args, true);
                 print_r($rsp);

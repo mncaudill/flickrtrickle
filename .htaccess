@@ -1,4 +1,7 @@
 RewriteEngine on
 
-RewriteRule ^auth$                      auth.php
-RewriteRule ^trickle$                   trickle.php
+RewriteCond %{HTTP_HOST} ^flickrtrickle.com
+RewriteRule (.*) http://www.flickrtrickle.com/$1 [R=301,L]
+
+RewriteRule ^auth$                      auth.php [L]
+RewriteRule ^trickle$                   trickle.php [L]

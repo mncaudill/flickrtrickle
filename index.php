@@ -12,8 +12,12 @@
         if(isset($_SESSION['user'])) {
             loadlib('flickr');
 
+            $user = $_SESSION['user'];
+
+            print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$user['username']}</a>. <a href='/logout.php'>Not you?</a>";
+
             // Show next trickle photos
-            $rsp = flickr_get_trickle_photos($_SESSION['user']);
+            $rsp = flickr_get_trickle_photos($user);
             if($rsp['ok']) {
                 $rsp = $rsp['rsp'];
                 if($rsp['stat'] == 'ok') {
