@@ -7,7 +7,7 @@
         <title>FlickrTrickle</title>
     </head>
     <body>
-        <h1>FlickTrickle</h1>
+        <h1>FlickrTrickle</h1>
 <?php
         if(isset($_SESSION['user'])) {
             loadlib('flickr');
