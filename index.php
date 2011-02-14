@@ -1,5 +1,10 @@
 <?php
     require 'include/init.php';
+    $instr = <<<__
+        <p>
+        If you want to "trickle" your photos into Flickr instead of dumping in dozens of pictures at one time when your contacts will only see at most 5 in their "Photos From" tab, this is your tool.</p>
+        <p>Just upload your photos as private and add the tag "flickrtrickle" to them. Then visit this page and we'll pull your 5 oldest (by date posted) trickle photos. Hit the button and I'll update the date posted to the current time, remove the tag, and make the photo public. This way you can trickle in your photos as you see fit.</p>
+__;
 ?>
 <!doctype html>
 <html>
@@ -15,7 +20,7 @@
             $user = $_SESSION['user'];
 
             print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$user['username']}</a>. <a href='/logout.php'>Not you?</a>";
-            print "<br><br>";
+            print $instr;
 
             // Show next trickle photos
             $rsp = flickr_get_trickle_photos($user);
@@ -51,6 +56,7 @@
         } else {
             loadlib('flickr');
             print "<a href='" . flickr_get_auth_url() . "'>Log In</a>";
+            print $instr;
         }
 ?>
     </body>

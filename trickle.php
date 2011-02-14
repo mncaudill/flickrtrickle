@@ -55,7 +55,8 @@
                 flickr_api_call($args, true);
 
                 $title = htmlspecialchars($photo['title']['_content'], ENT_COMPAT, 'utf-8');
-                print "Trickled photo \"$title\"<br>";
+                $link = "<a href='http://www.flickr.com/photos/{$_SESSION['user']['nsid']}/$photo_id/'>$title</a>";
+                print "Trickled photo $link<br>";
             }
         }
     }
