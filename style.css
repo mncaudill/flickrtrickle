@@ -1,0 +1,12 @@
+body { 
+    /* I like diveintohtml5's font choices. */
+    font: large/1.556 'Linux Libertine',Palatino,'Palatino Linotype','Book Antiqua',Georgia,'Times New Roman',serif;
+    width: 900px;
+    margin: 0 auto;
+}
+a {
+    color: black;
+}
+img {
+    outline: none;
+}

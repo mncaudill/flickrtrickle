@@ -1,11 +1,19 @@
+<!doctype html>
+<html>
+    <head>
+        <title>FlickrTrickle</title>
+        <link rel="stylesheet" type="text/css" href="/style.css"/>
+    </head>
+    <body>
+        <h1>Step 2 of the Trickle Experience</h1>
 <?php
 
     require 'include/init.php';
 
     $time = time();
-    $token = $_SESSION['user']['token'];
 
     if(isset($_SESSION['user'])) {
+        $token = $_SESSION['user']['token'];
         foreach($_POST['photos'] as $photo_id) {
             loadlib('flickr');
             $args = array(
@@ -55,12 +63,16 @@
                 flickr_api_call($args, true);
 
                 $title = htmlspecialchars($photo['title']['_content'], ENT_COMPAT, 'utf-8');
+                $title = $title ? $title : "Untitled";
                 $link = "<a href='http://www.flickr.com/photos/{$_SESSION['user']['nsid']}/$photo_id/'>$title</a>";
                 print "Trickled photo $link<br>";
             }
         }
+    } else {
+        print "Nothing here for you!<br/><br/>";
     }
 
 ?>
-
-<a href="/">Back to home</a>
+        <a href="/">Back to home</a>
+    </body>
+</html
