@@ -3,7 +3,7 @@
     $instr = <<<__
         <p>
         If you want to "trickle" your photos into Flickr instead of dumping in dozens of pictures at one time when your contacts will only see at most 5 in their "Photos From" tab, this is your tool.</p>
-        <p>Just upload your photos as private and add the tag "flickrtrickle" to them. Then visit this page and I'll pull your 5 oldest (by date posted) trickle photos. Hit the button and I'll update the date posted to the current time, remove the tag, and make the photo public. This way you can trickle in your photos as you see fit.</p>
+        <p><strong>Instructions:</strong> Just upload your photos as private and add the tag "flickrtrickle" to them. Then visit this page and I'll pull your 5 oldest (by date posted) trickle photos. Hit the button and I'll update the date posted to the current time, remove the tag, and make the photo public. This way you can trickle in your photos as you see fit.</p>
 __;
 ?>
 <!doctype html>
@@ -19,9 +19,9 @@ __;
             loadlib('flickr');
 
             $user = $_SESSION['user'];
+            $username = htmlspecialchars($user['username']);
 
-            print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$user['username']}</a>. <a href='/logout.php'>Not you?</a>";
-            print $instr;
+            print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$username}</a>. <a href='/logout.php'>Not you?</a>";
 
             // Show next trickle photos
             $rsp = flickr_get_trickle_photos($user);
@@ -34,7 +34,7 @@ __;
                         print "<table>";
                         foreach($photos as $photo) {
                             $url = "http://www.flickr.com/photos/{$photo['owner']}/{$photo['id']}/";
-                            $title = htmlspecialchars($photo['title'], ENT_COMPAT, 'utf-8');
+                            $title = htmlspecialchars($photo['title']);
                             $title = $title ? $title : "Untitled";
 
 
@@ -48,7 +48,8 @@ __;
                         print "<input type='submit' name='Trickle!' value='Trickle!'/>";
                         print "</form>";
                     } else {
-                        print "<strong>No FlickrTrickle photos were found. To add them, add the tag '<em>flickrtrickle</em>' to your private photos.</strong>";
+                        print $instr;
+                        print "<strong>No FlickrTrickle photos were found. To add them, add the tag \"<em>flickrtrickle</em>\" to your private photos.</strong>";
                     }
                 } else {
                     print $rsp['message']; 
