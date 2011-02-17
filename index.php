@@ -1,5 +1,7 @@
 <?php
     require 'include/init.php';
+    $is_pancakes = (isset($_SESSION['user']) && $_SESSION['user']['nsid'] == "8790317@N03") ? true : false;
+
     $instr = <<<__
         <p>
         If you want to "trickle" your photos into Flickr instead of dumping in dozens of pictures at one time when your contacts will only see at most 5 in their "Photos From" tab, this is your tool.</p>
@@ -11,10 +13,34 @@ __;
     <head>
         <title>FlickrTrickle</title>
         <link rel="stylesheet" type="text/css" href="/style.css"/>
+<?
+    // Something for Pancakes
+    if($is_pancakes) {
+?>
+        <style type="text/css">
+            body {
+                background-color: pink;
+                background-image: url(unicorn.jpg);
+                background-position: 50% 0;
+                background-repeat: no-repeat;
+                color: blue;
+                font-family: 'Comic Sans ms';
+                font-size: 24px;
+                width: 25%;
+            }
+        </style>
+<?
+        
+    }
+?>
     </head>
     <body>
         <h1>FlickrTrickle</h1>
 <?php
+        if($is_pancakes) {
+            print "<h2>Design inspired by Pancakes</h2>";
+        }
+
         if(isset($_SESSION['user'])) {
             loadlib('flickr');
 
@@ -64,5 +90,6 @@ __;
         }
 ?>
     <p style="font-size:small;">Created by <a href="http://nolancaudill.com">Nolan Caudill</a></p>
+<? include "include/inc_analytics.txt" ?>
     </body>
 </html>

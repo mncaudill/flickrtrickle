@@ -74,5 +74,6 @@
 
 ?>
         <br/><a href="/">Back to home</a>
+<? include "include/inc_analytics.txt"; ?>
     </body>
-</html
+</html>
