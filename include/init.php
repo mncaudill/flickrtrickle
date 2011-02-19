@@ -1,9 +1,6 @@
 <?php
     session_start();
 
-    const FLICKR_API_KEY = "95b7614608b1684d4b5b628c53374100";
-    const FLICKR_API_SECRET = "f15ca2e3560f2b6a";
-
     $cfg = array();
 
     $cfg['db_host'] = 'localhost';
@@ -14,4 +11,15 @@
     function loadlib($lib) {
         $curr_dir = dirname(__FILE__);
         require_once "$curr_dir/lib_$lib.php";
+    }
+    
+    // Determine env
+    $hostname = $_SERVER['HTTP_HOST'];
+    switch($hostname) {
+        case 'flickrtrickle.localhost':
+            include 'dev_config.php';
+            break;
+        default:
+            include 'prod_config.php';
+            break;
     }
