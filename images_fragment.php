@@ -11,7 +11,7 @@
     $page_num = $clean_page ? $clean_page : 1;
 
     // Show next trickle photos
-    const FETCHED_PHOTOS = 25;
+    const FETCHED_PHOTOS = 20;
 
     $rsp = flickr_get_trickle_photos($user, FETCHED_PHOTOS, $page_num);
 

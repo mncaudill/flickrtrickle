@@ -35,12 +35,16 @@ __;
 ?>
     </head>
     <body>
+        <div id="container">
         <h1>FlickrTrickle</h1>
 <?php
-        if($is_pancakes) {
-            print "<h2>Design inspired by Pancakes</h2>";
+
+        if(isset($_GET['success'])) {
+            print '<h2>Success!</h2>';
         }
 
+        if($is_pancakes) {
+            print "<h2>Design inspired by Pancakes</h2>"; } 
         if(isset($_SESSION['user'])) {
             loadlib('flickr');
 
@@ -50,22 +54,21 @@ __;
             print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$username}</a>. <a href='/logout.php'>Not you?</a><br><br>";
 
 
-            print '<div style="float:left;" id="left-loosey">';
+            print '<div id="lefty-loosey">';
             print '<div id="tray"></div>';
             print "<div id=\"image-bank\" style=\"clear:both;\">Loading images...</div>";
             print '</div>';
 
-            print '<div style="float:right;" id="righty-tighty">';
-            print '<div id="trickle-it" style="background-color:green;padding:10px;border:1px solid black;width:100px;margin:10px;">Trickle!</div>';
-            print '<div style="margin-bottom:15px;padding:15px 0;border-top:1px solid black;border-bottom:1px solid black;">';
-            print '<div id="perm-matrix" style="float:right;width:150px;font-size:12px;">';
+            print '<div id="righty-tighty">';
+            print '<a href="#" id="trickle-it">Trickle!</a>';
+            print '<div style="font-size:12px;padding:15px 0;border-top:1px solid black;border-bottom:1px solid black;">';
             print '<input type="radio" name="perm" value="pb"/>Public<br/>';
-            print '<input type="radio" name="perm" value="frfa"/>Friends & Family<br/>';
+            print '<input type="radio" name="perm" value="ff"/>Friends & Family<br/>';
             print '<input type="radio" name="perm" value="fr"/>Friends<br/>';
             print '<input type="radio" name="perm" value="fa"/>Family<br/>';
             print '<a id="remove" style="color:red;" href="#">Remove</a>';
             print '</div>';
-            print '<div style="clear:both;"></div>';
+            print "<p style='clear:both;font-size:small;'>Created by <a href='http://nolancaudill.com'>Nolan Caudill</a></p>";
             print '</div>';
             print '</div>';
 
@@ -76,7 +79,6 @@ __;
             print $instr;
         }
 ?>
-    <p style="clear:both;font-size:small;">Created by <a href="http://nolancaudill.com">Nolan Caudill</a></p>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 <script type="text/javascript">
@@ -89,8 +91,16 @@ __;
                 cache: false,
                 success: function(msg){
                     $(image_bank).html(msg);
+
+                    // Fade-out preselected ones
+                    for(var i in images_to_post) {
+                        if(images_to_post.hasOwnProperty(i)) {
+                            $('#image-' + i).addClass('in-tray');
+                        }
+                    }
                 }
             });
+
         }
 
         var images_to_post = {};
@@ -150,6 +160,7 @@ __;
                 disable_form();
             }
             $('#trayimage-' + active_image_id).remove();
+            $('#image-' + active_image_id).removeClass('in-tray');
 
             id = 0;
             for(var i in images_to_post) {
@@ -166,7 +177,8 @@ __;
             return false;
         });
 
-        $('#perm-matrix input[name="perm"]').change(function(){
+        $('input[name="perm"]').change(function(){
+            console.log($(this).val());
             images_to_post[active_image_id].perm = $(this).val();
         });
 
@@ -174,6 +186,7 @@ __;
             var photo_id = this.id.replace(/^image-/, '');
             if(images_to_post_length < 5 && !(photo_id in images_to_post)) {
                 image_src = $(this).attr('src');
+                $(this).addClass('in-tray');
                 tray.append('<img id="trayimage-' + photo_id + '" src="' + image_src + '"/>');
 
                 images_to_post[photo_id] = {perm: 'pb', src: image_src.replace(/_s.jpg$/, '_m.jpg')}; 
@@ -189,6 +202,7 @@ __;
             var data = {};
             photo_string = '';
             count = 0;
+            $(this).text('Trickling...');
 
             for(var i in images_to_post) {
                 if(images_to_post.hasOwnProperty(i)) {
@@ -207,8 +221,11 @@ __;
                 url: "/trickle.php",
                 data: data,
                 cache: false,
-                success: function(){ alert("trickled!"); }
+                success: function(){ 
+                    window.location = 'http://' + window.location.hostname + '/?success=1'
+                }
             });
+            return false;
         });
 
     });
@@ -216,5 +233,6 @@ __;
 
 
 <? include "include/inc_analytics.txt" ?>
+    </div>
     </body>
 </html>
