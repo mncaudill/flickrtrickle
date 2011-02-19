@@ -14,7 +14,8 @@
 
     if(isset($_SESSION['user'])) {
         $token = $_SESSION['user']['token'];
-        foreach($_POST['photos'] as $photo_id) {
+        $photos = explode(',', $_POST['photos']);
+        foreach($photos as $photo_id) {
             loadlib('flickr');
             $args = array(
                 'method' => 'flickr.photos.getInfo',
@@ -52,12 +53,15 @@
                 flickr_api_call($args, true);
 
                 // Make public
+                $is_public = $_POST[$photo_id . '-pb'] ? 1 : 0;
+                $is_family = ($_POST[$photo_id . '-fa'] || $_POST[$photo_id . '-frfa']) ? 1 : 0;
+                $is_friend = ($_POST[$photo_id . '-fr'] || $_POST[$photo_id . '-frfa']) ? 1 : 0;
                 $args = array(
                     'method' => 'flickr.photos.setPerms',
                     'photo_id' => $photo_id,
-                    'is_public' => 1,
-                    'is_friend' => 0,
-                    'is_family' => 0,
+                    'is_public' => $is_public,
+                    'is_friend' => $is_friend,
+                    'is_family' => $is_family,
                     'auth_token' => $token,
                 );
                 flickr_api_call($args, true);

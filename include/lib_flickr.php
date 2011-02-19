@@ -33,7 +33,7 @@
         return $rsp;
     }
 
-    function flickr_get_trickle_photos($user, $num = 5) {
+    function flickr_get_trickle_photos($user, $num = 25, $page = 1) {
         $args = array(
             'method' => 'flickr.photos.search',
             'user_id' => $user['nsid'],
@@ -42,10 +42,20 @@
             'privacy_filter' => 5,
             'sort' => 'date-posted-asc', // Grabbing the oldest
             'per_page' => $num,
-            'extras' => 'url_t,tags',
+            'page' => $page,
+            'extras' => 'url_sq,tags',
         );
         $rsp = flickr_api_call($args, true);
-        return $rsp;
+
+        if($rsp['ok']) {
+            if($rsp['rsp']['stat'] == 'ok') {
+                return array('ok' => 1, 'rsp' => $rsp['rsp']);
+            } else {
+                return array('ok' => 0, 'rsp' => $rsp['message']);
+            }
+        }
+
+        return array('ok' => 0, 'rsp' => $rsp['message']);
     }
 
     function flickr_trickle_photo($user, $photo_id) {

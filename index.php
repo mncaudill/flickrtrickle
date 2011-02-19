@@ -47,49 +47,152 @@ __;
             $user = $_SESSION['user'];
             $username = htmlspecialchars($user['username']);
 
-            print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$username}</a>. <a href='/logout.php'>Not you?</a>";
+            print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$username}</a>. <a href='/logout.php'>Not you?</a><br><br>";
 
-            // Show next trickle photos
-            $rsp = flickr_get_trickle_photos($user);
-            if($rsp['ok']) {
-                $rsp = $rsp['rsp'];
-                if($rsp['stat'] == 'ok') {
-                    $photos = $rsp['photos']['photo'];
-                    if($photos) {
-                        print "<form method='post' action='/trickle'>";
-                        print "<table>";
-                        foreach($photos as $photo) {
-                            $url = "http://www.flickr.com/photos/{$photo['owner']}/{$photo['id']}/";
-                            $title = htmlspecialchars($photo['title']);
-                            $title = $title ? $title : "Untitled";
+            print '<div id="trickle-it" style="background-color:green;padding:10px;border:1px solid black;width:100px;margin:10px;">Trickle!</div>';
 
+            print '<div id="tray"></div>';
+            print '<div style="margin-bottom:15px;padding:15px 0;border-top:1px solid black;border-bottom:1px solid black;">';
+            print '<div style="float:left;" id="active-image"></div>';
+            print '<div id="perm-matrix" style="float:right;width:150px;font-size:12px;">';
+            print '<input type="radio" name="perm" value="pb"/>Public<br/>';
+            print '<input type="radio" name="perm" value="frfa"/>Friends & Family<br/>';
+            print '<input type="radio" name="perm" value="fr"/>Friends<br/>';
+            print '<input type="radio" name="perm" value="fa"/>Family<br/>';
+            print '<a id="remove" style="color:red;" href="#">Remove</a>';
+            print '</div>';
+            print '<div style="clear:both;"></div>';
+            print '</div>';
+            print "<div id=\"image-bank\" style=\"clear:both;\">Loading images...</div>";
 
-                            print "<tr>";
-                            print "<td><input checked type='checkbox' name='photos[]' value='{$photo['id']}'/></td>";
-                            print "<td><a href='$url'>$title</a></td>";
-                            print "<td><a href='$url'><img style='margin:10px;' width='{$photo['width_t']}' height='{$photo['height_t']}' src='{$photo['url_t']}'/></a></td>";
-                            print "</tr>";
-                        }
-                        print "</table>";
-                        print "<input type='submit' name='Trickle!' value='Trickle!'/>";
-                        print "</form>";
-                    } else {
-                        print $instr;
-                        print "<strong>No FlickrTrickle photos were found. To add them, add the tag \"<em>flickrtrickle</em>\" to your private photos.</strong>";
-                    }
-                } else {
-                    print $rsp['message']; 
-                }
-            } else {
-                print "Having API difficulties at the moment...<br>";
-            }
         } else {
+
             loadlib('flickr');
             print "<a href='" . flickr_get_auth_url() . "'>Log In</a>";
             print $instr;
         }
 ?>
-    <p style="font-size:small;">Created by <a href="http://nolancaudill.com">Nolan Caudill</a></p>
+    <p style="clear:both;font-size:small;">Created by <a href="http://nolancaudill.com">Nolan Caudill</a></p>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript">
+    CURR_PAGE = 1;
+    $(document).ready(function(){
+        function fetch_page(page_num) {
+            $.ajax({
+                url: "/images_fragment.php",
+                data: "page=" + page_num,
+                cache: false,
+                success: function(msg){
+                    $(image_bank).html(msg);
+                }
+            });
+        }
+
+        var images_to_post = {};
+        var images_to_post_length = 0;
+
+        var image_bank = document.getElementById('image-bank');
+        var tray = null;
+        var active_image = null;
+        var active_image_id = 0;
+
+        if(image_bank) {
+            fetch_page(1);
+            tray = $('#tray');
+            active_image = $('#active-image');
+        }
+
+        $('.prev').live('click', function(){
+            $(image_bank).html("Loading images...");
+            CURR_PAGE--;
+            fetch_page(CURR_PAGE);
+            return false;
+        });
+
+        $('.next').live('click', function(){ 
+            $(image_bank).html("Loading images...");
+            CURR_PAGE++;
+            fetch_page(CURR_PAGE);
+            return false;
+        });
+
+        function make_image_active(image_id) {
+            if(!image_id) return;
+
+            active_image_id = image_id;
+            active_image.html('<img style="margin:0 auto;" src="' + images_to_post[image_id].src + '">');
+            perm = images_to_post[image_id].perm;
+            $('input[name="perm"]').filter('[value="' + perm + '"]').click();
+        }
+
+        $('#remove').click(function(){
+            delete images_to_post[active_image_id];
+            images_to_post_length--;
+            $('#trayimage-' + active_image_id).remove();
+
+            id = 0;
+            for(var i in images_to_post) {
+                id = i;    
+            }
+            make_image_active(id);
+            return false;
+        });
+
+        $('#tray img').live('click', function() {
+            var photo_id = this.id.replace(/^trayimage-/, '');
+            make_image_active(photo_id);
+            return false;
+        });
+
+        $('#perm-matrix input[name="perm"]').change(function(){
+            images_to_post[active_image_id].perm = $(this).val();
+        });
+
+        $('.imagebank-image').live('click', function(){ 
+            var photo_id = this.id.replace(/^imagebank-/, '');
+            if(images_to_post_length < 5 && !(photo_id in images_to_post)) {
+                image_src = $('#image-' + photo_id).attr('src');
+                tray.append('<img id="trayimage-' + photo_id + '" src="' + image_src + '"/>');
+
+                images_to_post[photo_id] = {perm: 'pb', src: image_src.replace(/_s.jpg$/, '_m.jpg')}; 
+                make_image_active(photo_id);
+                images_to_post_length++;
+            }
+            return false;
+        });
+
+        $('#trickle-it').click(function(){
+
+            var data = {};
+            photo_string = '';
+            count = 0;
+
+            for(var i in images_to_post) {
+                if(images_to_post.hasOwnProperty(i)) {
+                    if(count) {
+                        photo_string += ',';
+                    }
+                    count++;
+                    photo_string += i;
+                    data[i + '-' + images_to_post[i].perm] = 1;
+                }
+            }
+            data.photos = photo_string;
+
+            $.ajax({
+                type: 'POST',
+                url: "/trickle.php",
+                data: data,
+                cache: false,
+                success: function(){ alert("trickled!"); }
+            });
+        });
+
+    });
+</script>
+
+
 <? include "include/inc_analytics.txt" ?>
     </body>
 </html>
