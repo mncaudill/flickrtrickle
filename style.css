@@ -1,8 +1,13 @@
 body { 
     /* I like diveintohtml5's font choices. */
     font: large/1.556 'Linux Libertine',Palatino,'Palatino Linotype','Book Antiqua',Georgia,'Times New Roman',serif;
-    width: 400px;
     margin: 0 auto;
+    width: 600px;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: bold;
 }
 
 a {
@@ -13,10 +18,22 @@ img {
     outline: none;
 }
 
+#photos {
+    border-collapse: collapse;
+    border-spacing: 5px;
+    line-height:0px;
+}
+
+#photos td {
+    padding: 3px;
+    margin: 0;
+    vertical-align: middle;
+}
+
 #tray {
     margin-bottom: 15px;
     padding: 5px 0;
-    width: 395px;
+    width: 399px;
     height: 75px;
     border: 5px solid gray;
     background-color: gray;
@@ -24,6 +41,10 @@ img {
 
 #tray img {
     margin-right: 5px;
+}
+
+#tray img.active {
+    border: 2px solid black;
 }
 
 #tray img:last-child {

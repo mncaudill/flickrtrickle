@@ -11,7 +11,7 @@
     $page_num = $clean_page ? $clean_page : 1;
 
     // Show next trickle photos
-    const FETCHED_PHOTOS = 5;
+    const FETCHED_PHOTOS = 25;
 
     $rsp = flickr_get_trickle_photos($user, FETCHED_PHOTOS, $page_num);
 
@@ -36,7 +36,7 @@
                 $count = 0;
                 foreach($row as $photo) {
                     $url = "http://www.flickr.com/photos/{$photo['owner']}/{$photo['id']}/";
-                    print "<td><a class=\"imagebank-image\" id=\"imagebank-{$photo['id']}\" href='$url'><img id='image-{$photo['id']}' width='{$photo['width_sq']}' height='{$photo['height_sq']}' src='{$photo['url_sq']}'/></a></td>";
+                    print "<td><img class=\"imagebank-image\" id='image-{$photo['id']}' width='{$photo['width_sq']}' height='{$photo['height_sq']}' src='{$photo['url_sq']}'/></td>";
 
                     $count++;
                 }

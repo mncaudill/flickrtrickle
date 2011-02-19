@@ -49,11 +49,15 @@ __;
 
             print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$username}</a>. <a href='/logout.php'>Not you?</a><br><br>";
 
-            print '<div id="trickle-it" style="background-color:green;padding:10px;border:1px solid black;width:100px;margin:10px;">Trickle!</div>';
 
+            print '<div style="float:left;" id="left-loosey">';
             print '<div id="tray"></div>';
+            print "<div id=\"image-bank\" style=\"clear:both;\">Loading images...</div>";
+            print '</div>';
+
+            print '<div style="float:right;" id="righty-tighty">';
+            print '<div id="trickle-it" style="background-color:green;padding:10px;border:1px solid black;width:100px;margin:10px;">Trickle!</div>';
             print '<div style="margin-bottom:15px;padding:15px 0;border-top:1px solid black;border-bottom:1px solid black;">';
-            print '<div style="float:left;" id="active-image"></div>';
             print '<div id="perm-matrix" style="float:right;width:150px;font-size:12px;">';
             print '<input type="radio" name="perm" value="pb"/>Public<br/>';
             print '<input type="radio" name="perm" value="frfa"/>Friends & Family<br/>';
@@ -63,7 +67,7 @@ __;
             print '</div>';
             print '<div style="clear:both;"></div>';
             print '</div>';
-            print "<div id=\"image-bank\" style=\"clear:both;\">Loading images...</div>";
+            print '</div>';
 
         } else {
 
@@ -121,14 +125,30 @@ __;
             if(!image_id) return;
 
             active_image_id = image_id;
-            active_image.html('<img style="margin:0 auto;" src="' + images_to_post[image_id].src + '">');
             perm = images_to_post[image_id].perm;
             $('input[name="perm"]').filter('[value="' + perm + '"]').click();
+
+            $('#tray img').removeClass('active');
+            $('#trayimage-' + active_image_id).addClass('active');
         }
+
+        function enable_form() {
+            $('input[name="perm"]').removeAttr('disabled');
+            $('#remove').css('visibility', 'visible');
+        }
+
+        function disable_form() {
+            $('input[name="perm"]').attr('disabled', 'disabled');
+            $('#remove').css('visibility', 'hidden');
+        }
+        disable_form();
 
         $('#remove').click(function(){
             delete images_to_post[active_image_id];
             images_to_post_length--;
+            if(images_to_post_length == 0) {
+                disable_form();
+            }
             $('#trayimage-' + active_image_id).remove();
 
             id = 0;
@@ -136,6 +156,7 @@ __;
                 id = i;    
             }
             make_image_active(id);
+
             return false;
         });
 
@@ -150,12 +171,13 @@ __;
         });
 
         $('.imagebank-image').live('click', function(){ 
-            var photo_id = this.id.replace(/^imagebank-/, '');
+            var photo_id = this.id.replace(/^image-/, '');
             if(images_to_post_length < 5 && !(photo_id in images_to_post)) {
-                image_src = $('#image-' + photo_id).attr('src');
+                image_src = $(this).attr('src');
                 tray.append('<img id="trayimage-' + photo_id + '" src="' + image_src + '"/>');
 
                 images_to_post[photo_id] = {perm: 'pb', src: image_src.replace(/_s.jpg$/, '_m.jpg')}; 
+                enable_form();
                 make_image_active(photo_id);
                 images_to_post_length++;
             }
