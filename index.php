@@ -178,7 +178,6 @@ __;
         });
 
         $('input[name="perm"]').change(function(){
-            console.log($(this).val());
             images_to_post[active_image_id].perm = $(this).val();
         });
 
