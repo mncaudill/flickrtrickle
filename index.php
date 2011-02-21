@@ -1,6 +1,5 @@
 <?php
     require 'include/init.php';
-    $is_pancakes = (isset($_SESSION['user']) && $_SESSION['user']['nsid'] == "8790317@N03") ? true : false;
 
     $instr = <<<__
         <p>
@@ -13,26 +12,6 @@ __;
     <head>
         <title>FlickrTrickle</title>
         <link rel="stylesheet" type="text/css" href="/style.css"/>
-<?
-    // Something for Pancakes
-    if($is_pancakes) {
-?>
-        <style type="text/css">
-            body {
-                background-color: pink;
-                background-image: url(unicorn.jpg);
-                background-position: 50% 0;
-                background-repeat: no-repeat;
-                color: blue;
-                font-family: 'Comic Sans ms';
-                font-size: 24px;
-                width: 25%;
-            }
-        </style>
-<?
-        
-    }
-?>
     </head>
     <body>
         <div id="container">
@@ -43,8 +22,6 @@ __;
             print '<h2>Success!</h2>';
         }
 
-        if($is_pancakes) {
-            print "<h2>Design inspired by Pancakes</h2>"; } 
         if(isset($_SESSION['user'])) {
             loadlib('flickr');
 
