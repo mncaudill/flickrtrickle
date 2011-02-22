@@ -35,9 +35,10 @@
                     'method' => 'flickr.photos.setDates',
                     'auth_token' => $token,
                     'photo_id' => $photo_id,
-                    'date_posted' => $time++,
+                    'date_posted' => $time,
                 );
                 flickr_api_call($args, true);
+                $time += 2;
 
                 // Remove tag
                 $args = array(
