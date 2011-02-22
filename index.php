@@ -185,7 +185,7 @@ __;
                         images_in_tray[curr_index - 1] = images_in_tray[curr_index];
                         images_in_tray[curr_index] = temp;
 
-                        temp_image= images[curr_index - 1];
+                        temp_image = images[curr_index - 1];
                         images[curr_index - 1] = images[curr_index];
                         images[curr_index] = temp_image;
 
@@ -243,22 +243,27 @@ __;
 
         $('#trickle-it').click(function(){
 
-            var data = {};
             photo_string = '';
             count = 0;
             $(this).text('Trickling...');
 
-            for(var i in images_to_post) {
-                if(images_to_post.hasOwnProperty(i)) {
-                    if(count) {
-                        photo_string += ',';
-                    }
-                    count++;
-                    photo_string += i;
-                    data[i + '-' + images_to_post[i].perm] = 1;
-                }
+            // Form in reverse order (so tray matches up with what shows up in Flickr timeline)
+            // photo_ids=1234,1235,1236
+            // perms=ff,fr,pb
+            images_in_tray.reverse();
+
+            ids = [];
+            perms = [];
+            for(i in images_in_tray) {
+                id = images_in_tray[i];
+                ids.push(id);
+                perms.push(images_to_post[id].perm);
             }
-            data.photos = photo_string;
+
+            var data = {
+                ids: ids.join(','),
+                perms: perms.join(','),
+            };
 
             $.ajax({
                 type: 'POST',

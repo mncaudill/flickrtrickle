@@ -6,8 +6,11 @@
 
     if(isset($_SESSION['user'])) {
         $token = $_SESSION['user']['token'];
-        $photos = explode(',', $_POST['photos']);
+        $photos = explode(',', $_POST['ids']);
+        $perms = explode(',' , $_POST['perms']);
+        $count = 0;
         foreach($photos as $photo_id) {
+            $perm = $perms[$count];
             loadlib('flickr');
             $args = array(
                 'method' => 'flickr.photos.getInfo',
@@ -45,9 +48,9 @@
                 flickr_api_call($args, true);
 
                 // Make public
-                $is_public = $_POST[$photo_id . '-pb'] ? 1 : 0;
-                $is_family = ($_POST[$photo_id . '-fa'] || $_POST[$photo_id . '-ff']) ? 1 : 0;
-                $is_friend = ($_POST[$photo_id . '-fr'] || $_POST[$photo_id . '-ff']) ? 1 : 0;
+                $is_public = $perm == 'pb' ? 1 : 0;
+                $is_family = ($perm == 'ff' || $perm == 'fa') ? 1 : 0;
+                $is_friend = ($perm == 'ff' || $perm == 'fr') ? 1 : 0;
                 $args = array(
                     'method' => 'flickr.photos.setPerms',
                     'photo_id' => $photo_id,
@@ -57,11 +60,12 @@
                     'auth_token' => $token,
                 );
                 flickr_api_call($args, true);
-                
-                print json_encode(array('ok' => 1, 'msg' => 'success'));
-
             }
+
+            $count++;
         }
+
+        print json_encode(array('ok' => 1, 'msg' => 'success'));
     } else {
         print "Nothing here for you!<br/><br/>";
     }
