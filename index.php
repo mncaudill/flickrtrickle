@@ -45,6 +45,7 @@ __;
             print '<input type="radio" name="perm" value="fa"/>Family<br/>';
             print '<a id="remove" style="color:red;" href="#">Remove</a>';
             print '</div>';
+            print '<p style="font-size:11px;"><strong>Tips: </strong>The timeline as it displays here is how it will show on Flickr. Please feel free to drag and drop images in the tray.</p>';
             print "<p style='clear:both;font-size:small;'>Created by <a href='http://nolancaudill.com'>Nolan Caudill</a></p>";
             print '</div>';
             print '</div>';
