@@ -58,6 +58,7 @@ __;
 ?>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
 <script type="text/javascript">
     CURR_PAGE = 1;
     $(document).ready(function(){
@@ -81,6 +82,7 @@ __;
         }
 
         var images_to_post = {};
+        var images_in_tray = []; // this is solely for ordering
         var images_to_post_length = 0;
 
         var image_bank = document.getElementById('image-bank');
@@ -130,14 +132,28 @@ __;
         }
         disable_form();
 
+        lefts = [5, 89, 173, 257, 341];
+        midlines = [42.5, 126.5, 210.5, 294.5, 378.5];
+
         $('#remove').click(function(){
             delete images_to_post[active_image_id];
+
             images_to_post_length--;
             if(images_to_post_length == 0) {
                 disable_form();
             }
+            images_in_tray.splice(images_in_tray.indexOf(active_image_id), 1);
+
             $('#trayimage-' + active_image_id).remove();
             $('#image-' + active_image_id).removeClass('in-tray');
+            
+            // Visually refresh tray
+            counter = 0;
+            $('#tray img').each(function(){ 
+                $(this).css('left', lefts[counter] + 'px');
+                counter++;
+            });
+            refresh_draggables();
 
             id = 0;
             for(var i in images_to_post) {
@@ -147,6 +163,56 @@ __;
 
             return false;
         });
+
+        function refresh_draggables() {
+            curr_index = null;
+            images = [];
+            $('#tray img').each(function(){
+                images.push($(this));
+            }).draggable({
+                axis: 'x',
+                start: function() {
+                    curr_index = images_in_tray.indexOf(this.id.replace(/^trayimage-/, ''));
+                },
+                drag: function() {
+                    curr_x = $(this).position().left;
+                    // Check to the left
+                    if(curr_index > 0 && curr_x < midlines[curr_index - 1]) {
+                        images[curr_index - 1].css('left', lefts[curr_index]  + 'px');
+
+                        // Update tray data
+                        temp = images_in_tray[curr_index - 1];
+                        images_in_tray[curr_index - 1] = images_in_tray[curr_index];
+                        images_in_tray[curr_index] = temp;
+
+                        temp_image= images[curr_index - 1];
+                        images[curr_index - 1] = images[curr_index];
+                        images[curr_index] = temp_image;
+
+                        curr_index = curr_index - 1;
+                    }
+                    // Now check to the right
+                    else if((curr_index < (images.length - 1)) && (curr_x + 75) > midlines[curr_index + 1]) {
+                        images[curr_index + 1].css('left', lefts[curr_index]  + 'px');
+
+                        // Update tray data
+                        temp = images_in_tray[curr_index + 1];
+                        images_in_tray[curr_index + 1] = images_in_tray[curr_index];
+                        images_in_tray[curr_index] = temp;
+
+                        temp_image = images[curr_index + 1];
+                        images[curr_index + 1] = images[curr_index];
+                        images[curr_index] = temp_image;
+
+                        curr_index = curr_index + 1;
+                    }
+
+                },
+                stop: function() {
+                    images[curr_index].css('left', lefts[curr_index] + 'px');
+                },
+            });
+        }
 
         $('#tray img').live('click', function() {
             var photo_id = this.id.replace(/^trayimage-/, '');
@@ -163,9 +229,11 @@ __;
             if(images_to_post_length < 5 && !(photo_id in images_to_post)) {
                 image_src = $(this).attr('src');
                 $(this).addClass('in-tray');
-                tray.append('<img id="trayimage-' + photo_id + '" src="' + image_src + '"/>');
+                tray.append('<img style="left:' + lefts[images_to_post_length] + 'px;" id="trayimage-' + photo_id + '" src="' + image_src + '"/>');
+                refresh_draggables();
 
                 images_to_post[photo_id] = {perm: 'pb', src: image_src.replace(/_s.jpg$/, '_m.jpg')}; 
+                images_in_tray.push(photo_id);
                 enable_form();
                 make_image_active(photo_id);
                 images_to_post_length++;

@@ -58,11 +58,17 @@ img {
     padding: 5px;
     background-color: #BEBEBE;
     height: 79px;
+    position: relative;
+}
+
+#tray img.ui-draggable-dragging {
+    z-index: 10000;
 }
 
 #tray img {
     margin-right: 5px;
     border: 2px solid #BEBEBE;
+    position: absolute;
 }
 
 #tray img.active {
