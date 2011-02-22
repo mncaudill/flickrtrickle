@@ -2,7 +2,7 @@
 
     require 'include/init.php';
 
-    $time = time();
+    $time = time() - 20;
 
     if(isset($_SESSION['user'])) {
         $token = $_SESSION['user']['token'];
