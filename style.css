@@ -69,6 +69,7 @@ img {
     margin-right: 5px;
     border: 2px solid #BEBEBE;
     position: absolute;
+    cursor: pointer;
 }
 
 #tray img.active {
@@ -92,3 +93,8 @@ img {
     -webkit-border-radius: 5px;
     text-decoration: none;
 }
+
+.imagebank-image {
+    cursor: pointer;
+}
+

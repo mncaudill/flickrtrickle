@@ -11,7 +11,7 @@ __;
 <html>
     <head>
         <title>FlickrTrickle</title>
-        <link rel="stylesheet" type="text/css" href="/style.css"/>
+        <link rel="stylesheet" type="text/css" href="/style.css?v=1"/>
     </head>
     <body>
         <div id="container">
