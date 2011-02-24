@@ -1,6 +1,8 @@
 <?php
     require 'include/init.php';
 
+    header('Content-type: text/html; charset=utf-8');
+
     $instr = <<<__
         <p>
         If you want to "trickle" your photos into Flickr instead of dumping in dozens of pictures at one time when your contacts will only see at most 5 in their "Photos From" tab, this is your tool.</p>
