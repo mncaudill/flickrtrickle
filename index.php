@@ -26,7 +26,7 @@ __;
             loadlib('flickr');
 
             $user = $_SESSION['user'];
-            $username = htmlspecialchars($user['username']);
+            $username = htmlspecialchars($user['username'], ENT_COMPAT, 'utf-8');
 
             print "Logged in as <a href='http://www.flickr.com/photos/{$user['nsid']}/'>{$username}</a>. <a href='/logout.php'>Not you?</a><br><br>";
 
