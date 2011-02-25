@@ -57,14 +57,15 @@ __;
             loadlib('flickr');
             print "<a href='" . flickr_get_auth_url() . "'>Log In</a>";
             print $instr;
+            print "<p style='clear:both;font-size:small;'>Created by <a href='http://nolancaudill.com'>Nolan Caudill</a></p>";
         }
 ?>
 
+    </div>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
 <script type="text/javascript" src="<?=JS_FILE?>?v=1"></script>
 
 <? include "include/inc_analytics.txt" ?>
-    </div>
     </body>
 </html>
