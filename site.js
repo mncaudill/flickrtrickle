@@ -181,6 +181,10 @@ $(document).ready(function(){
 
     $('#trickle-it').click(function(){
 
+        if(images_in_tray.length == 0) {
+            return false;
+        }
+
         photo_string = '';
         count = 0;
         $(this).text('Trickling...');

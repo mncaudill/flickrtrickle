@@ -64,7 +64,7 @@ __;
     </div>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-<script type="text/javascript" src="<?=JS_FILE?>?v=1"></script>
+<script type="text/javascript" src="<?=JS_FILE?>?v=2"></script>
 
 <? include "include/inc_analytics.txt" ?>
     </body>
