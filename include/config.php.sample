@@ -1,0 +1,6 @@
+<?php
+
+    const FLICKR_API_KEY = "";
+    const FLICKR_API_SECRET = "";
+
+    const JS_FILE = "/site.js";
