@@ -9,7 +9,7 @@
             $args['api_sig'] = _flickr_sign($args);
         }
 
-        $url = "http://api.flickr.com/services/rest/?";
+        $url = "https://api.flickr.com/services/rest/?";
         $url .= http_build_query($args);
 
         $ch = curl_init($url);
@@ -83,6 +83,6 @@
 
         $api_sig = _flickr_sign($args);
         $key = FLICKR_API_KEY;
-        return "http://flickr.com/services/auth/?api_key={$key}&perms=write&api_sig=$api_sig";
+        return "https://flickr.com/services/auth/?api_key={$key}&perms=write&api_sig=$api_sig";
     }
 
